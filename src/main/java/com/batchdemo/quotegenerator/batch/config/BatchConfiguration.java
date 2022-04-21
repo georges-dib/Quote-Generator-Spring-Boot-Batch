@@ -18,7 +18,9 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+
+import java.util.Objects;
 
 
 @Configuration
@@ -47,7 +49,11 @@ public class BatchConfiguration {
     public FlatFileItemReader<Recipient> itemReader() {
         FlatFileItemReader<Recipient> itemReader = new FlatFileItemReader<>();
         itemReader.setName("CSV-Reader");
-        itemReader.setResource(new FileSystemResource("src/main/resources/recipients.csv"));
+        itemReader.setResource(
+                new InputStreamResource(
+                        Objects.requireNonNull(BatchConfiguration.class.getResourceAsStream("/recipients.csv"))
+                )
+        );
         itemReader.setLinesToSkip(1);
         itemReader.setLineMapper(getLineMapper());
 
